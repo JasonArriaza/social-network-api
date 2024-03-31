@@ -98,7 +98,7 @@ router.get('/thoughts/:thoughtId', async (req, res) => {
 router.post('/thoughts', async (req, res) => {
     try {
         const thought = await Thought.create(req.body);
-        // Push the created thought's _id to the associated user's thoughts array field
+        // Push the created thought's _id to the select user's thoughts array field
         const user = await User.findByIdAndUpdate(
             req.body.userId,
             { $push: { thoughts: thought._id } },
@@ -135,7 +135,7 @@ router.delete('/thoughts/:thoughtId', async (req, res) => {
         if (!deletedThought) {
             return res.status(404).json({ message: 'Thought not found' });
         }
-        // Remove the deleted thought's _id from the associated user's thoughts array field
+        // Remove the deleted thought's _id from the select user's thoughts array
         await User.findByIdAndUpdate(deletedThought.userId, { $pull: { thoughts: req.params.thoughtId } });
         res.json(deletedThought);
     } catch (err) {
